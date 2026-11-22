@@ -2,7 +2,7 @@
 const products = [
   {
     id: 1,
-    name: "Alebrije jaguar",
+    name: "Alebrije zorro",
     description: "Figura artesanal llena de color y tradición.",
     price: 850,
     images: [
@@ -19,16 +19,16 @@ const products = [
     price: 1200,
     images: [
       "imagenes/Tapir/Tapir.jpeg",
-      "imagenes/Tapir/Tapir1.jpeg",
+      "imagenes/Tapir/Tapir4.jpeg",
       "imagenes/Tapir/Tapir2.jpeg",
       "imagenes/Tapir/Tapir3.jpeg"
     ]
   },
   {
     id: 3,
-    name: "Artesanía especial",
+    name: "Artesanía Gorila",
     description: "Elaborada con detalles únicos.",
-    price: 650,
+    price: 0,
     images: [
        "imagenes/Gorila/Gorila.jpeg",
       "imagenes/Gorila/Gorila1.jpeg",
@@ -179,6 +179,7 @@ document.getElementById("closeCart").onclick = () => {
 
 // PRESENTACIÓN AUTOMÁTICA
 const slides = [
+    "imagenes/LOGO.jpeg",
   "imagenes/Zorro/ZORRO.jpeg",
   "imagenes/Tapir/Tapir.jpeg",
   "imagenes/Gorila/Gorila.jpeg"
