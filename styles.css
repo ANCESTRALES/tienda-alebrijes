@@ -318,4 +318,14 @@ footer {
   .modal img {
     max-width: 75%;
   }
+
+/* Ocultar el carrito de compras */
+.cart-button {
+  display: none !important;
+}
+
+.cart-panel {
+  display: none !important;
+}
+
 }
