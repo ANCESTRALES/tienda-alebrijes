@@ -328,4 +328,13 @@ footer {
   display: none !important;
 }
 
+/* OCULTAR COMPLETAMENTE EL CARRITO */
+#cartButton,
+#cartPanel,
+.cart-button,
+.cart-panel {
+    display: none !important;
+    visibility: hidden !important;
+}
+
 }
