@@ -401,7 +401,23 @@ footer {
 }
 
 
+/* BOTON WHATSAPP */
 
+.whatsapp-button {
+  display: block;
+  background: #25D366;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.whatsapp-button:hover {
+  background: #1DA851;
+}
 
 
 /* MODO CATALOGO: OCULTAR FUNCIONES DE COMPRA */
@@ -413,3 +429,5 @@ footer {
 #cartPanel {
   display: none !important;
 }
+
+
