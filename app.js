@@ -69,27 +69,34 @@ function renderProducts() {
         alt="${product.name}"
         data-gallery="${product.id}"
       >
+
       <h3>${product.name}</h3>
       <p>${product.description}</p>
+
+      <p><strong>Medidas:</strong> ${product.height || "Consultar"}</p>
+      <p><strong>Material:</strong> ${product.material || "Consultar"}</p>
+
       <strong>${formatPrice(product.price)}</strong>
-      <button class="add-button" data-add="${product.id}">
-        Agregar al carrito
-      </button>
+
+      <a
+        class="whatsapp-button"
+        href="https://wa.me/529511234567?text=${encodeURIComponent(
+          `Hola, me interesa ${product.name}. ¿Me pueden dar más información?`
+        )}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        💬 Consultar por WhatsApp
+      </a>
     </article>
   `).join("");
-
-
-<a
-  class="whatsapp-button"
-  href="https://wa.me/529511234567?text=Hola,%20me%20interesa%20el%20Alebrije%20zorro"
-  target="_blank"
-  rel="noopener noreferrer">
-  💬 Consultar por WhatsApp
-</a>
-
-
-
 }
+    
+
+
+
+
+
 
 // AGREGAR PRODUCTO
 document.getElementById("productList").addEventListener("click", event => {
