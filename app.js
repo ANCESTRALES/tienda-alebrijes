@@ -32,7 +32,7 @@ const products = [
     id: 3,
     name: "Artesanía Gorila",
     description: "Elaborada con detalles únicos.",
-    price: 20,000,
+    price: 20000,
     height: "Alto: 25cm Largo:20cm",
     material: "Madera",
     images: [
