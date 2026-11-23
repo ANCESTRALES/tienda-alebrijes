@@ -78,16 +78,17 @@ function renderProducts() {
 
       <strong>${formatPrice(product.price)}</strong>
 
-      <a
-        class="whatsapp-button"
-        href="https://wa.me/529511234567?text=${encodeURIComponent(
-          `Hola, me interesa ${product.name}. ¿Me pueden dar más información?`
-        )}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        💬 Consultar por WhatsApp
-      </a>
+    //  <a
+     //   class="whatsapp-button"
+       //href="https://wa.me/529511234567?text=${encodeUR//IComponent(
+  //        `Hola, me interesa ${product.name}.
+//¿Me pueden dar más información?`
+ //       )}"
+  //      target="_blank"
+   //     rel="noopener noreferrer"
+  //   >
+    //    💬 Consultar por WhatsApp
+    //  </a>
     </article>
   `).join("");
 }
