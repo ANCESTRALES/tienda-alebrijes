@@ -431,3 +431,9 @@ footer {
 }
 
 
+/* CATÁLOGO SOLO CON IMÁGENES */
+.whatsapp-button,
+.add-button {
+  display: none !important;
+}
+
