@@ -5,6 +5,8 @@ const products = [
     name: "Alebrije zorro",
     description: "Figura artesanal llena de color y tradición.",
     price: 850,
+    height: "Alto: 25cm Largo:20cm",
+    material: "Madera",
     images: [
       "imagenes/Zorro/ZORRO.jpeg",
       "imagenes/Zorro/Zorro5.jpeg",
@@ -17,6 +19,8 @@ const products = [
     name: "Alebrije Tapir",
     description: "Una pieza decorativa especial.",
     price: 1200,
+    height: "Alto: 25cm Largo:20cm",
+    material: "Madera",
     images: [
       "imagenes/Tapir/Tapir.jpeg",
       "imagenes/Tapir/Tapir4.jpeg",
@@ -28,7 +32,9 @@ const products = [
     id: 3,
     name: "Artesanía Gorila",
     description: "Elaborada con detalles únicos.",
-    price: 0,
+    price: 20,000,
+    height: "Alto: 25cm Largo:20cm",
+    material: "Madera",
     images: [
        "imagenes/Gorila/Gorila.jpeg",
       "imagenes/Gorila/Gorila1.jpeg",
