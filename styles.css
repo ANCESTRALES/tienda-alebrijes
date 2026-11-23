@@ -396,3 +396,17 @@ footer {
   margin-top: 30px;
   opacity: 0.8;
 }
+
+
+
+
+
+/* MODO CATALOGO: OCULTAR FUNCIONES DE COMPRA */
+.add-button {
+  display: none !important;
+}
+
+#cartButton,
+#cartPanel {
+  display: none !important;
+}
