@@ -5,7 +5,7 @@ const products = [
     name: "Alebrije zorro",
     description: "Figura artesanal llena de color y tradición.",
     price: 850,
-    height: "Alto: 25 cmx10 cm",
+    height: "Alto: 25 cm",
     material: "Madera",
     images: [
       "imagenes/Zorro/ZORRO.jpeg",
