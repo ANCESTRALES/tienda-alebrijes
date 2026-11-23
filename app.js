@@ -77,6 +77,18 @@ function renderProducts() {
       </button>
     </article>
   `).join("");
+
+
+<a
+  class="whatsapp-button"
+  href="https://wa.me/529511234567?text=Hola,%20me%20interesa%20el%20Alebrije%20zorro"
+  target="_blank"
+  rel="noopener noreferrer">
+  💬 Consultar por WhatsApp
+</a>
+
+
+
 }
 
 // AGREGAR PRODUCTO
