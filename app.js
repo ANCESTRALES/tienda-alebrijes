@@ -97,7 +97,8 @@ function renderProducts() {
 
 
 
-
+
+
 
 // AGREGAR PRODUCTO
 document.getElementById("productList").addEventListener("click", event => {
@@ -208,7 +209,8 @@ const slides = [
     "imagenes/LOGO.jpeg",
   "imagenes/Zorro/ZORRO.jpeg",
   "imagenes/Tapir/Tapir.jpeg",
-  "imagenes/Gorila/Gorila.jpeg"
+  "imagenes/Gorila/Gorila.jpeg",
+  "imagenes/Jaguar/Jaguar.jpeg",
 ];
 
 let currentSlide = 0;
