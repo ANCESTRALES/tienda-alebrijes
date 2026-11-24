@@ -85,10 +85,17 @@ function renderProducts() {
       <h3>${product.name}</h3>
       <p>${product.description}</p>
 
-      <p><strong>Medidas:</strong> ${product.height || "Consultar"}</p>
-      <p><strong>Material:</strong> ${product.material || "Consultar"}</p>
+      <p class="product-measures">
+  Alto: ${product.height || "Consultar"} ·
+  Largo: ${product.length || "Consultar"} ·
+  Ancho: ${product.width || "Consultar"}
+</p>
+
+<p><strong>Material:</strong> ${product.material || "Consultar"}</p>
 
       <strong>${formatPrice(product.price)}</strong>
+
+
 
       <a
         class="whatsapp-button"
