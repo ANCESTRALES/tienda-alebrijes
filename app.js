@@ -43,10 +43,10 @@ const products = [
     ]
   },
   {
-    id: 3,
-    name: "Artesanía Gorila",
+    id: 4,
+    name: "Artesanía Jaguar",
     description: "Figura exotica.",
-    price: 20000,
+    price: 38000,
     height: "Alto: 25 cm",
     material: "Madera",
     images: [
