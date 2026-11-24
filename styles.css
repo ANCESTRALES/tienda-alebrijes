@@ -437,3 +437,9 @@ footer {
   display: none !important;
 }
 
+
+.product-measures {
+  font-size: 14px;
+  color: #74665D;
+  margin: 8px 0;
+}
