@@ -99,7 +99,7 @@ function renderProducts() {
   Ancho: ${product.width || "Consultar"}
 </p>
 
-<p><strong>Material:</strong> ${product.material || "Consultar"}</p>
+<p>Material: ${product.material || "Consultar"}</p>
 
       <strong>${formatPrice(product.price)}</strong>
 
