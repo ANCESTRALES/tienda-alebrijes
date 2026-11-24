@@ -41,6 +41,18 @@ const products = [
       "imagenes/Gorila/Gorila2.jpeg",
       "imagenes/Gorila/Gorila3.jpeg"
     ]
+  },
+  {
+    id: 3,
+    name: "Artesanía Gorila",
+    description: "Figura exotica.",
+    price: 20000,
+    height: "Alto: 25 cm",
+    material: "Madera",
+    images: [
+       "imagenes/Jaguar/Jaguar.jpeg",
+      "imagenes/Jaguar/Jaguar2.jpeg"
+    ]
   }
 ];
 
