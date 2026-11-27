@@ -8,7 +8,7 @@ const products = [
     id: 1,
     name: "Alebrije zorro",
     description: "Figura artesanal llena de color y tradición.",
-    price: 850,
+    price: 10000,
     height: "25 cm",
     length: "30 cm",
     width: "15 cm",
