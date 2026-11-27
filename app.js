@@ -1,22 +1,26 @@
-// PRODUCTOS DE EJEMPLO
+
+// ==========================================
+// PRODUCTOS
+// ==========================================
+
 const products = [
   {
-  id: 1,
-  name: "Alebrije zorro",
-  description: "Figura artesanal llena de color y tradición.",
-  price: 850,
-  height: "25 cm",
-  length: "30 cm",
-  width: "15 cm",
-  material: "Madera",
-  category: "caninos",
-  images: [
-    "imagenes/Zorro/ZORRO.jpeg",
-    "imagenes/Zorro/Zorro5.jpeg",
-    "imagenes/Zorro/Zorro6.jpeg",
-    "imagenes/Zorro/Zorro7.jpeg"
-  ]
-},
+    id: 1,
+    name: "Alebrije zorro",
+    description: "Figura artesanal llena de color y tradición.",
+    price: 850,
+    height: "25 cm",
+    length: "30 cm",
+    width: "15 cm",
+    material: "Madera",
+    category: "caninos",
+    images: [
+      "imagenes/Zorro/ZORRO.jpeg",
+      "imagenes/Zorro/Zorro5.jpeg",
+      "imagenes/Zorro/Zorro6.jpeg",
+      "imagenes/Zorro/Zorro7.jpeg"
+    ]
+  },
   {
     id: 2,
     name: "Alebrije Tapir",
@@ -26,6 +30,7 @@ const products = [
     length: "30 cm",
     width: "15 cm",
     material: "Madera",
+    category: "salvajes",
     images: [
       "imagenes/Tapir/Tapir.jpeg",
       "imagenes/Tapir/Tapir4.jpeg",
@@ -42,8 +47,9 @@ const products = [
     length: "30 cm",
     width: "15 cm",
     material: "Madera",
+    category: "salvajes",
     images: [
-       "imagenes/Gorila/Gorila.jpeg",
+      "imagenes/Gorila/Gorila.jpeg",
       "imagenes/Gorila/Gorila1.jpeg",
       "imagenes/Gorila/Gorila2.jpeg",
       "imagenes/Gorila/Gorila3.jpeg"
@@ -52,18 +58,24 @@ const products = [
   {
     id: 4,
     name: "Artesanía Jaguar",
-    description: "Figura exotica.",
+    description: "Figura exótica.",
     price: 38000,
     height: "25 cm",
     length: "30 cm",
     width: "15 cm",
     material: "Madera",
+    category: "felinos",
     images: [
-       "imagenes/Jaguar/Jaguar.jpeg",
+      "imagenes/Jaguar/Jaguar.jpeg",
       "imagenes/Jaguar/Jaguar2.jpeg"
     ]
   }
 ];
+
+
+// ==========================================
+// FORMATO DE PRECIOS
+// ==========================================
 
 const formatPrice = value =>
   value.toLocaleString("es-MX", {
@@ -71,7 +83,11 @@ const formatPrice = value =>
     currency: "MXN"
   });
 
+
+// ==========================================
 // CARRITO
+// ==========================================
+
 let cart = JSON.parse(localStorage.getItem("alebrijesCart")) || [];
 
 function saveCart() {
@@ -79,12 +95,49 @@ function saveCart() {
   renderCart();
 }
 
-// MOSTRAR CATÁLOGO
+
+// ==========================================
+// MOSTRAR CATÁLOGO Y FILTRAR PRODUCTOS
+// ==========================================
+
 function renderProducts() {
   const container = document.getElementById("productList");
 
-  container.innerHTML = products.map(product => `
+  const categoryFilter = document.getElementById("categoryFilter");
+  const materialFilter = document.getElementById("materialFilter");
+
+  const category = categoryFilter ? categoryFilter.value : "";
+  const material = materialFilter ? materialFilter.value : "";
+
+  // Normalizar texto para reconocer Cartonería con acento
+  const normalize = value =>
+    String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
+  const filteredProducts = products.filter(product => {
+    const matchesCategory =
+      !category || product.category === category;
+
+    const matchesMaterial =
+      !material || normalize(product.material) === normalize(material);
+
+    return matchesCategory && matchesMaterial;
+  });
+
+  if (filteredProducts.length === 0) {
+    container.innerHTML = `
+      <p class="no-products">
+        No encontramos piezas con esos filtros.
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = filteredProducts.map(product => `
     <article class="product">
+
       <img
         src="${product.images[0]}"
         alt="${product.name}"
@@ -92,87 +145,128 @@ function renderProducts() {
       >
 
       <h3>${product.name}</h3>
+
       <p>${product.description}</p>
 
       <p class="product-measures">
-  Alto: ${product.height || "Consultar"} ·
-  Largo: ${product.length || "Consultar"} ·
-  Ancho: ${product.width || "Consultar"}
-</p>
+        Alto: ${product.height || "Consultar"} ·
+        Largo: ${product.length || "Consultar"} ·
+        Ancho: ${product.width || "Consultar"}
+      </p>
 
-<p>Material: ${product.material || "Consultar"}</p>
+      <p>Material: ${product.material || "Consultar"}</p>
 
       <strong>${formatPrice(product.price)}</strong>
 
-
-
       <a
         class="whatsapp-button"
-     href="https://wa.me/529511234567?text=${encodeURIComponent(
+        href="https://wa.me/529511234567?text=${encodeURIComponent(
           `Hola, me interesa ${product.name}.
 ¿Me pueden dar más información?`
         )}"
         target="_blank"
         rel="noopener noreferrer"
-     >
+      >
         💬 Consultar por WhatsApp
       </a>
+
     </article>
   `).join("");
 }
-    
 
 
+// ==========================================
+// ABRIR Y CERRAR FILTROS
+// ==========================================
 
+const filterPanel = document.getElementById("filterPanel");
+const filterOverlay = document.getElementById("filterOverlay");
 
+function openFilters() {
+  filterPanel.classList.add("open");
+  filterOverlay.classList.add("active");
+  document.body.classList.add("filters-open");
+}
 
+function closeFilters() {
+  filterPanel.classList.remove("open");
+  filterOverlay.classList.remove("active");
+  document.body.classList.remove("filters-open");
+}
 
+document.getElementById("openFilters").addEventListener("click", openFilters);
 
-// AGREGAR PRODUCTO
-document.getElementById("productList").addEventListener("click", event => {
-  const addId = event.target.dataset.add;
-  const galleryId = event.target.dataset.gallery;
+document.getElementById("closeFilters").addEventListener("click", closeFilters);
 
-  if (addId) {
-    const product = products.find(p => p.id === Number(addId));
-    const existing = cart.find(p => p.id === product.id);
+filterOverlay.addEventListener("click", closeFilters);
 
-    if (existing) {
-      existing.quantity++;
-    } else {
-      cart.push({ ...product, quantity: 1 });
-    }
+document.getElementById("applyFilters").addEventListener("click", () => {
+  renderProducts();
+  closeFilters();
+});
 
-    saveCart();
+document.getElementById("clearFilters").addEventListener("click", () => {
+  document.getElementById("categoryFilter").value = "";
+  document.getElementById("materialFilter").value = "";
+
+  renderProducts();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeFilters();
   }
+});
+
+
+// ==========================================
+// GALERÍA: ABRIR DESDE EL CATÁLOGO
+// ==========================================
+
+document.getElementById("productList").addEventListener("click", event => {
+  const galleryId = event.target.dataset.gallery;
 
   if (galleryId) {
     openGallery(Number(galleryId));
   }
 });
 
+
+// ==========================================
 // MOSTRAR CARRITO
+// ==========================================
+
 function renderCart() {
   const container = document.getElementById("cartItems");
 
   container.innerHTML = cart.length
     ? cart.map(product => `
       <div class="cart-item">
+
         <img src="${product.images[0]}" alt="${product.name}">
+
         <div class="cart-item-info">
+
           <b>${product.name}</b>
+
           <p>${formatPrice(product.price)}</p>
+
           <button class="quantity-button" data-minus="${product.id}">−</button>
+
           ${product.quantity}
+
           <button class="quantity-button" data-plus="${product.id}">+</button>
+
           <br>
+
           <button class="remove-button" data-remove="${product.id}">
             Eliminar
           </button>
+
         </div>
       </div>
     `).join("")
-    : "<p>Tu carrito está vacío :carrito_de_compras:</p>";
+    : "<p>Tu carrito está vacío 🛒</p>";
 
   const subtotal = cart.reduce(
     (sum, product) => sum + product.price * product.quantity,
@@ -187,14 +281,22 @@ function renderCart() {
   const shipping = 150;
 
   document.getElementById("cartCount").textContent = count;
-  document.getElementById("subtotal").textContent = formatPrice(subtotal);
+
+  document.getElementById("subtotal").textContent =
+    formatPrice(subtotal);
+
   document.getElementById("shippingCost").textContent =
     formatPrice(shipping);
+
   document.getElementById("total").textContent =
     formatPrice(subtotal + (cart.length ? shipping : 0));
 }
 
-// MODIFICAR Y ELIMINAR PRODUCTOS
+
+// ==========================================
+// MODIFICAR Y ELIMINAR PRODUCTOS DEL CARRITO
+// ==========================================
+
 document.getElementById("cartItems").addEventListener("click", event => {
   const plus = event.target.dataset.plus;
   const minus = event.target.dataset.minus;
@@ -221,7 +323,11 @@ document.getElementById("cartItems").addEventListener("click", event => {
   saveCart();
 });
 
+
+// ==========================================
 // ABRIR Y CERRAR CARRITO
+// ==========================================
+
 const cartPanel = document.getElementById("cartPanel");
 
 document.getElementById("cartButton").onclick = () => {
@@ -232,13 +338,17 @@ document.getElementById("closeCart").onclick = () => {
   cartPanel.classList.remove("open");
 };
 
-// PRESENTACIÓN AUTOMÁTICA
+
+// ==========================================
+// PRESENTACIÓN AUTOMÁTICA DEL INICIO
+// ==========================================
+
 const slides = [
-    "imagenes/LOGO.jpeg",
+  "imagenes/LOGO.jpeg",
   "imagenes/Zorro/ZORRO.jpeg",
   "imagenes/Tapir/Tapir.jpeg",
   "imagenes/Gorila/Gorila.jpeg",
-  "imagenes/Jaguar/Jaguar.jpeg",
+  "imagenes/Jaguar/Jaguar.jpeg"
 ];
 
 let currentSlide = 0;
@@ -250,7 +360,11 @@ setInterval(() => {
     slides[currentSlide];
 }, 4000);
 
+
+// ==========================================
 // GALERÍA DE FOTOGRAFÍAS
+// ==========================================
+
 const modal = document.getElementById("galleryModal");
 const galleryImage = document.getElementById("galleryImage");
 
@@ -259,8 +373,13 @@ let currentImage = 0;
 
 function openGallery(productId) {
   currentProduct = products.find(p => p.id === productId);
+
+  if (!currentProduct) return;
+
   currentImage = 0;
+
   showGalleryImage();
+
   modal.classList.add("open");
 }
 
@@ -287,7 +406,11 @@ document.getElementById("nextImage").onclick = () => {
   showGalleryImage();
 };
 
+
+// ==========================================
 // ENVÍO DE DEMOSTRACIÓN
+// ==========================================
+
 document.getElementById("destination").addEventListener("input", event => {
   const message = document.getElementById("shippingMessage");
 
@@ -296,7 +419,11 @@ document.getElementById("destination").addEventListener("input", event => {
     : "Ingresa un código postal de 5 dígitos.";
 });
 
+
+// ==========================================
 // FINALIZAR COMPRA
+// ==========================================
+
 document.getElementById("checkoutButton").onclick = () => {
   const postalCode = document.getElementById("destination").value;
 
@@ -316,6 +443,10 @@ document.getElementById("checkoutButton").onclick = () => {
   );
 };
 
+
+// ==========================================
 // INICIAR TIENDA
+// ==========================================
+
 renderProducts();
 renderCart();
