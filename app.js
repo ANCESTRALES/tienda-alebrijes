@@ -25,7 +25,7 @@ const products = [
     id: 2,
     name: "Alebrije Tapir",
     description: "Una pieza decorativa especial.",
-    price: 1200,
+    price: 7000,
     height: "25 cm",
     length: "30 cm",
     width: "15 cm",
