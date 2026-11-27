@@ -88,6 +88,70 @@
 
       <div id="productList" class="products"></div>
     </section>
+
+
+<!-- Fondo oscuro de filtros -->
+<div id="filterOverlay" class="filter-overlay"></div>
+
+<!-- Panel lateral de filtros -->
+<aside id="filterPanel" class="filter-panel">
+
+  <div class="filter-heading">
+    <h2>Filtrar productos</h2>
+    <button id="closeFilters" aria-label="Cerrar filtros">✕</button>
+  </div>
+
+  <div class="filter-content">
+
+    <label for="categoryFilter">Categoría</label>
+    <select id="categoryFilter">
+      <option value="">Todas las categorías</option>
+      <option value="osos">Osos</option>
+      <option value="felinos">Felinos</option>
+      <option value="caninos">Caninos</option>
+      <option value="toros">Toros y animales de granja</option>
+      <option value="salvajes">Animales salvajes</option>
+      <option value="exoticos">Animales exóticos</option>
+      <option value="aves">Aves</option>
+      <option value="fantasticos">Animales fantásticos</option>
+      <option value="acuaticos">Animales acuáticos</option>
+      <option value="otras">Otras criaturas</option>
+      <option value="corazones">Corazones y figuras</option>
+      <option value="decoracion">Arte decorativo</option>
+    </select>
+
+    <label for="materialFilter">Material</label>
+    <select id="materialFilter">
+      <option value="">Todos los materiales</option>
+      <option value="madera">Madera</option>
+      <option value="cartoneria">Cartonería</option>
+    </select>
+
+    <label for="availabilityFilter">Disponibilidad</label>
+    <select id="availabilityFilter">
+      <option value="">Toda la disponibilidad</option>
+      <option value="disponible">Disponibles</option>
+      <option value="pedido">Bajo pedido</option>
+    </select>
+
+  </div>
+
+  <div class="filter-actions">
+    <button id="clearFilters" class="clear-filters">
+      Limpiar filtros
+    </button>
+
+    <button id="applyFilters" class="main-button">
+      Ver resultados
+    </button>
+  </div>
+
+</aside>
+
+
+
+
+
   </main>
 
   <aside id="cartPanel" class="cart-panel">
