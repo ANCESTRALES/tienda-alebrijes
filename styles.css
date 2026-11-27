@@ -636,3 +636,26 @@ body.filters-open {
   }
 }
 
+
+
+
+
+
+
+.brand-intro {
+  max-width: 850px;
+  margin: 60px auto;
+  padding: 20px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.brand-intro h2 {
+  color: #49352B;
+  margin-bottom: 15px;
+}
+
+.brand-intro p {
+  color: #292522;
+  margin-bottom: 12px;
+}
