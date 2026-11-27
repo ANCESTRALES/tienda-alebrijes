@@ -447,3 +447,192 @@ footer {
   color: #74665D;
   margin: 8px 0;
 }
+
+
+
+
+
+
+/* =================================
+   FILTRO LATERAL - ANCESTRALES
+================================= */
+
+.catalog-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.catalog-heading h2 {
+  margin-bottom: 10px;
+}
+
+.catalog-heading p {
+  color: #777;
+}
+
+.filter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 18px;
+  background: #49352B;
+  color: white;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  transition: 0.25s;
+}
+
+.filter-button:hover {
+  background: #704f3d;
+  transform: translateY(-2px);
+}
+
+/* Fondo oscuro */
+
+.filter-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 39;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s;
+}
+
+.filter-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Panel lateral */
+
+.filter-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(400px, 90%);
+  height: 100vh;
+  background: #FFFDF9;
+  z-index: 40;
+  padding: 28px;
+  box-shadow: -5px 0 25px #0002;
+  transform: translateX(105%);
+  transition: transform 0.35s ease;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.filter-panel.open {
+  transform: translateX(0);
+}
+
+.filter-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #e8ded4;
+}
+
+.filter-heading h2 {
+  font-size: 23px;
+  color: #49352B;
+}
+
+.filter-heading button {
+  background: transparent;
+  font-size: 25px;
+  color: #49352B;
+}
+
+.filter-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 28px;
+}
+
+.filter-content label {
+  font-weight: bold;
+  color: #49352B;
+  margin-top: 12px;
+}
+
+.filter-content select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ded3c8;
+  border-radius: 8px;
+  background: white;
+  color: #49352B;
+  font-size: 15px;
+  outline: none;
+}
+
+.filter-content select:focus {
+  border-color: #b66c3e;
+}
+
+.filter-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 30px;
+}
+
+.clear-filters {
+  background: transparent;
+  border: 1px solid #b66c3e;
+  color: #a45e34;
+  padding: 14px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.filter-actions .main-button {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+}
+
+body.filters-open {
+  overflow: hidden;
+}
+
+/* Mensaje sin resultados */
+
+.no-products {
+  grid-column: 1 / -1;
+  padding: 45px 15px;
+  color: #777;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .catalog-heading {
+    align-items: center;
+  }
+
+  .catalog-heading h2 {
+    font-size: 27px;
+  }
+
+  .filter-button {
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+
+  .filter-panel {
+    width: 88%;
+    padding: 23px;
+  }
+}
+
