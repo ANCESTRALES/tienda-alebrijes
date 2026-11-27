@@ -1,21 +1,22 @@
 // PRODUCTOS DE EJEMPLO
 const products = [
   {
-    id: 1,
-    name: "Alebrije zorro",
-    description: "Figura artesanal llena de color y tradición.",
-    price: 850,
-    height: "25 cm",
-    length: "30 cm",
-    width: "15 cm",
-    material: "Madera",
-    images: [
-      "imagenes/Zorro/ZORRO.jpeg",
-      "imagenes/Zorro/Zorro5.jpeg",
-      "imagenes/Zorro/Zorro6.jpeg",
-      "imagenes/Zorro/Zorro7.jpeg"
-    ]
-  },
+  id: 1,
+  name: "Alebrije zorro",
+  description: "Figura artesanal llena de color y tradición.",
+  price: 850,
+  height: "25 cm",
+  length: "30 cm",
+  width: "15 cm",
+  material: "Madera",
+  category: "caninos",
+  images: [
+    "imagenes/Zorro/ZORRO.jpeg",
+    "imagenes/Zorro/Zorro5.jpeg",
+    "imagenes/Zorro/Zorro6.jpeg",
+    "imagenes/Zorro/Zorro7.jpeg"
+  ]
+},
   {
     id: 2,
     name: "Alebrije Tapir",
