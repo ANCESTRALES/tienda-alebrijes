@@ -1,24 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="imagenes/LOGO.jpeg">
 
-  <title>Ancestrales Alebrijes | Artesanías de Oaxaca</title>
+  <!-- ICONO DE LA MARCA -->
+  <link rel="icon" type="image/jpeg" href="imagenes/LOGO.jpeg">
+
+  <!-- TÍTULO Y SEO -->
+  <title>Ancestrales | Alebrijes y Artesanías de Oaxaca</title>
+
+  <meta name="description" content="Ancestrales Alebrijes: conoce nuestra colección de alebrijes y artesanías de Oaxaca. Piezas únicas llenas de arte, cultura y tradición mexicana.">
+
+  <meta name="keywords" content="Ancestrales, Ancestrales Alebrijes, alebrijes Ancestrales, alebrijes de Oaxaca, artesanías de Oaxaca, alebrijes pintados a mano">
+
+  <meta name="author" content="Ancestrales Alebrijes">
+  <meta name="robots" content="index, follow">
+
+  <!-- REDES SOCIALES -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ancestrales | Alebrijes de Oaxaca">
+  <meta property="og:description" content="Descubre Ancestrales Alebrijes, piezas artesanales llenas de color, cultura y tradición.">
+  <meta property="og:image" content="imagenes/LOGO.jpeg">
 
   <link rel="stylesheet" href="styles.css">
-
-  <meta name="description" content="Descubre Ancestrales Alebrijes, figuras artesanales de Oaxaca pintadas a mano. Conoce nuestros alebrijes, piezas únicas y tradición mexicana.">
-
-  <meta name="keywords" content="Ancestrales Alebrijes, alebrijes de Oaxaca, artesanías de Oaxaca, alebrijes pintados a mano">
 </head>
 
 <body>
 
+  <!-- ENCABEZADO -->
   <header class="header">
-    <a href="#" class="logo">ALEBRIJES</a>
+    <a href="#inicio" class="logo">ANCESTRALES</a>
 
     <nav>
       <a href="#inicio">Inicio</a>
@@ -34,16 +46,44 @@
 
     <!-- PORTADA -->
     <section id="inicio" class="hero">
-      <img id="heroImage" src="imagenes/LOGO.jpeg" alt="Productos artesanales">
+
+      <img id="heroImage"
+           src="imagenes/LOGO.jpeg"
+           alt="Ancestrales Alebrijes, artesanías de Oaxaca">
 
       <div class="hero-text">
         <p>ARTE · CULTURA · TRADICIÓN</p>
-        <h1>Descubre piezas únicas</h1>
+
+        <h1>Ancestrales Alebrijes</h1>
+
+        <p>
+          Descubre el arte de Oaxaca a través de piezas únicas
+          elaboradas con tradición, creatividad y color.
+        </p>
 
         <a href="#catalogo" class="main-button">
           Explorar catálogo
         </a>
       </div>
+
+    </section>
+
+    <!-- PRESENTACIÓN DE LA MARCA -->
+    <section class="brand-intro">
+
+      <h2>Conoce Ancestrales</h2>
+
+      <p>
+        Ancestrales es un espacio dedicado al arte de los alebrijes
+        y las artesanías de Oaxaca. Nuestra colección reúne piezas
+        llenas de color, imaginación y tradición mexicana.
+      </p>
+
+      <p>
+        En Ancestrales Alebrijes celebramos el talento artesanal
+        y la belleza de cada creación.
+      </p>
+
     </section>
 
     <!-- CATÁLOGO -->
@@ -55,15 +95,24 @@
           <p>Descubre nuestra colección especial.</p>
         </div>
 
-        <button id="openFilters" class="filter-button" aria-label="Abrir filtros">
-          <svg width="23" height="23" viewBox="0 0 24 24"
-               fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round">
+        <button id="openFilters"
+                class="filter-button"
+                aria-label="Abrir filtros">
+
+          <svg width="23" height="23"
+               viewBox="0 0 24 24"
+               fill="none"
+               stroke="currentColor"
+               stroke-width="2"
+               stroke-linecap="round">
+
             <line x1="4" y1="7" x2="20" y2="7"/>
             <line x1="4" y1="17" x2="20" y2="17"/>
             <circle cx="9" cy="7" r="2"/>
             <circle cx="15" cy="17" r="2"/>
+
           </svg>
+
           <span>Filtros</span>
         </button>
       </div>
@@ -88,6 +137,7 @@
     <div class="filter-content">
 
       <label for="categoryFilter">Categoría</label>
+
       <select id="categoryFilter">
         <option value="">Todas las categorías</option>
         <option value="osos">Osos</option>
@@ -105,6 +155,7 @@
       </select>
 
       <label for="materialFilter">Material</label>
+
       <select id="materialFilter">
         <option value="">Todos los materiales</option>
         <option value="madera">Madera</option>
@@ -114,6 +165,7 @@
     </div>
 
     <div class="filter-actions">
+
       <button id="clearFilters" class="clear-filters">
         Limpiar filtros
       </button>
@@ -121,6 +173,7 @@
       <button id="applyFilters" class="main-button">
         Ver resultados
       </button>
+
     </div>
 
   </aside>
@@ -136,61 +189,86 @@
     <div id="cartItems"></div>
 
     <div class="shipping">
+
       <label for="destination">Código postal de entrega</label>
-      <input id="destination" type="text" maxlength="5" placeholder="Ej. 68000">
-      <p id="shippingMessage">Envío de demostración: $150 MXN</p>
+
+      <input id="destination"
+             type="text"
+             maxlength="5"
+             placeholder="Ej. 68000">
+
+      <p id="shippingMessage">
+        Envío de demostración: $150 MXN
+      </p>
+
     </div>
 
     <div class="cart-total">
+
       <p>Subtotal: <span id="subtotal">$0.00</span></p>
+
       <p>Envío: <span id="shippingCost">$150.00</span></p>
+
       <h3>Total: <span id="total">$150.00</span></h3>
 
       <button id="checkoutButton" class="main-button">
         Continuar compra
       </button>
+
     </div>
 
   </aside>
 
   <!-- GALERÍA -->
   <div id="galleryModal" class="modal">
+
     <button id="closeGallery" class="modal-close">✕</button>
+
     <button id="previousImage">❮</button>
-    <img id="galleryImage" src="" alt="Fotografía del producto">
+
+    <img id="galleryImage"
+         src=""
+         alt="Fotografía del producto artesanal">
+
     <button id="nextImage">❯</button>
+
   </div>
 
   <!-- PIE DE PÁGINA -->
   <footer class="footer">
 
-    <h2>ALEBRIJES</h2>
+    <h2>Ancestrales Alebrijes</h2>
 
     <p>Arte, cultura y tradición de Oaxaca.</p>
+
     <p>¡Conecta con nosotros!</p>
 
     <div class="social-links">
 
       <a href="https://wa.me/9514002767"
-         target="_blank" rel="noopener noreferrer"
+         target="_blank"
+         rel="noopener noreferrer"
          class="social whatsapp">
         <span>💬</span> WhatsApp
       </a>
 
       <a href="https://www.instagram.com/isonalebrijes?fqnt=MTFtZ2Rkb2dqaXlsdA=="
-         target="_blank" rel="noopener noreferrer"
+         target="_blank"
+         rel="noopener noreferrer"
          class="social instagram">
         <span>📸</span> Instagram
       </a>
 
       <a href="https://www.facebook.com/share/1CmfdqJDRj/"
-         target="_blank" rel="noopener noreferrer"
+         target="_blank"
+         rel="noopener noreferrer"
          class="social facebook">
         <span>🤗</span> Facebook
       </a>
 
       <a href="https://www.tiktok.com/@ancestrales.alebrijes?_r=1&_t=ZS-9BeDVd9vvXB"
-         target="_blank" rel="noopener noreferrer"
+         target="_blank"
+         rel="noopener noreferrer"
          class="social tiktok">
         <span>【ᕷ】</span> TikTok
       </a>
@@ -203,7 +281,7 @@
     </div>
 
     <p class="copyright">
-      © 2026 ALEBRIJES. Todos los derechos reservados.
+      © 2026 Ancestrales Alebrijes. Todos los derechos reservados.
     </p>
 
   </footer>
