@@ -406,6 +406,10 @@ async function deleteProduct(id) {
 $("newProductButton").addEventListener("click", resetForm);
 $("cancelButton").addEventListener("click", resetForm);
 $("refreshButton").addEventListener("click", loadProducts);
+$("addCategoryButton").addEventListener("click", addCategory);
+$("addMaterialButton").addEventListener("click", addMaterial);
+
+
 
 // Escuchar cambios de sesión
 db.auth.onAuthStateChange((_event, session) => {
