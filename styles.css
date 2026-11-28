@@ -901,3 +901,23 @@ nav a {
     grid-template-columns: 1fr;
   }
 }
+
+
+
+/* Mostrar las fotografías completas de los alebrijes */
+.product img {
+  width: 100%;
+  height: 260px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  object-position: center;
+  background: #fffdf9;
+  padding: 10px;
+}
+
+@media (max-width: 600px) {
+  .product img {
+    height: 210px;
+    object-fit: contain;
+  }
+}
