@@ -1,6 +1,6 @@
 // REEMPLAZA ESTOS DOS VALORES CON LOS DE TU PROYECTO SUPABASE
-const SUPABASE_URL = "PEGA_AQUI_TU_PROJECT_URL";
-const SUPABASE_ANON_KEY = "PEGA_AQUI_TU_ANON_KEY";
+const SUPABASE_URL = "https://fuwgvvflodjnpuxybhgs.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_vrc9e4bGxkafYmnMJZfznA_x1AxJdfV";
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
@@ -314,10 +314,3 @@ db.auth.onAuthStateChange((_event, session) => {
 
 // Arrancar el panel
 checkSession();
-
-
-
-const SUPABASE_URL = "https://fuwgvvflodjnpuxybhgs.supabase.co";
-
-
-const SUPABASE_ANON_KEY = "sb_publishable_vrc9e4bGxkafYmnMJZfznA_x1AxJdfV";
