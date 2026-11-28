@@ -165,11 +165,13 @@ function showLogin() {
   $("logoutButton").classList.add("hidden");
 }
 
-function showAdmin() {
+async function showAdmin() {
   loginSection.classList.add("hidden");
   adminSection.classList.remove("hidden");
   $("logoutButton").classList.remove("hidden");
-  loadProducts();
+
+  await loadOptions();
+  await loadProducts();
 }
 
 // Iniciar sesión
