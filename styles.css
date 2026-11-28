@@ -686,7 +686,7 @@ img {
 button, a, select, input {
   -webkit-tap-highlight-color: transparent;
 }
-
+*/
 /* ENCABEZADO */
 
 .header {
@@ -884,4 +884,4 @@ nav a {
     grid-template-columns: 1fr;
   }
 }
-*/
+
