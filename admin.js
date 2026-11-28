@@ -1,4 +1,7 @@
-// REEMPLAZA ESTOS DOS VALORES CON LOS DE TU PROYECTO SUPABASE
+// ==========================================
+// CONEXIÓN CON SUPABASE
+// ==========================================
+
 const SUPABASE_URL = "https://fuwgvvflodjnpuxybhgs.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_vrc9e4bGxkafYmnMJZfznA_x1AxJdfV";
 
@@ -7,18 +10,27 @@ const db = window.supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
-const $ = (id) => document.getElementById(id);
 
-const loginSection = $("loginSection");
-const adminSection = $("adminSection");
-const loginForm = $("loginForm");
-const productForm = $("productForm");
-const productsList = $("productsList");
+// ==========================================
+// VARIABLES GENERALES
+// ==========================================
 
-let currentUser = null;
+let products = [];
 
-function showMessage(element, message) {
-  element.textContent = message;
+const $ = id => document.getElementById(id);
+
+const formatPrice = value =>
+  Number(value || 0).toLocaleString("es-MX", {
+    style: "currency",
+    currency: "MXN"
+  });
+
+function normalize(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
 }
 
 function escapeHTML(value = "") {
@@ -31,396 +43,505 @@ function escapeHTML(value = "") {
   })[char]);
 }
 
-function formatPrice(value) {
-  return Number(value || 0).toLocaleString("es-MX", {
-    style: "currency",
-    currency: "MXN"
-  });
+function getImages(product) {
+  return Array.isArray(product.images) ? product.images : [];
 }
 
 
-// Cargar categorías y materiales desde Supabase
-async function loadOptions() {
-  const categorySelect = $("category");
-  const materialSelect = $("material");
+// ==========================================
+// CARGAR PRODUCTOS, CATEGORÍAS Y MATERIALES
+// ==========================================
 
-  const [categoriesResult, materialsResult] = await Promise.all([
-    db.from("categories").select("name").order("name"),
-    db.from("materials").select("name").order("name")
-  ]);
+async function loadStoreData() {
+  const container = $("productList");
 
-  if (categoriesResult.error || materialsResult.error) {
-    console.error(
-      categoriesResult.error || materialsResult.error
-    );
-    showMessage(
-      $("formMessage"),
-      "No se pudieron cargar las categorías o materiales."
-    );
-    return;
+  if (container) {
+    container.innerHTML = "<p>Cargando nuestros alebrijes...</p>";
   }
 
-  function fillSelect(select, rows, placeholder, currentValue = "") {
-    const names = rows.map(row => row.name);
+  const [productsResult, categoriesResult, materialsResult] =
+    await Promise.all([
+      db
+        .from("products")
+        .select("*")
+        .neq("status", "hidden")
+        .order("id", { ascending: false }),
 
-    // Conservar una opción antigua si algún producto ya la utiliza.
-    if (currentValue && !names.includes(currentValue)) {
-      names.push(currentValue);
+      db
+        .from("categories")
+        .select("name")
+        .order("name"),
+
+      db
+        .from("materials")
+        .select("name")
+        .order("name")
+    ]);
+
+  if (productsResult.error) {
+    console.error("Error al cargar productos:", productsResult.error);
+
+    if (container) {
+      container.innerHTML = `
+        <p class="no-products">
+          No pudimos cargar los productos. Intenta actualizar la página.
+        </p>
+      `;
     }
 
-    select.innerHTML = "";
-
-    const firstOption = document.createElement("option");
-    firstOption.value = "";
-    firstOption.textContent = placeholder;
-    select.appendChild(firstOption);
-
-    names.forEach(name => {
-      const option = document.createElement("option");
-      option.value = name;
-      option.textContent = name;
-      select.appendChild(option);
-    });
-
-    if (currentValue) {
-      select.value = currentValue;
-    }
-  }
-
-  fillSelect(categorySelect, categoriesResult.data, "Selecciona una categoría");
-  fillSelect(materialSelect, materialsResult.data, "Selecciona un material");
-}
-
-// Agregar una categoría nueva
-async function addCategory() {
-  const name = prompt("Escribe el nombre de la nueva categoría:");
-
-  if (!name || !name.trim()) return;
-
-  const cleanName = name.trim();
-
-  const { error } = await db
-    .from("categories")
-    .insert({ name: cleanName });
-
-  if (error) {
-    alert(
-      error.code === "23505"
-        ? "Esa categoría ya existe."
-        : "No se pudo agregar la categoría: " + error.message
-    );
     return;
   }
 
-  await loadOptions();
-  $("category").value = cleanName;
-}
+  products = productsResult.data || [];
 
-// Agregar un material nuevo
-async function addMaterial() {
-  const name = prompt("Escribe el nombre del nuevo material:");
-
-  if (!name || !name.trim()) return;
-
-  const cleanName = name.trim();
-
-  const { error } = await db
-    .from("materials")
-    .insert({ name: cleanName });
-
-  if (error) {
-    alert(
-      error.code === "23505"
-        ? "Ese material ya existe."
-        : "No se pudo agregar el material: " + error.message
-    );
-    return;
-  }
-
-  await loadOptions();
-  $("material").value = cleanName;
-}
-
-
-// Comprobar sesión al abrir el panel
-async function checkSession() {
-  const { data, error } = await db.auth.getSession();
-
-  if (error) {
-    showMessage($("loginMessage"), error.message);
-    return;
-  }
-
-  if (data.session) {
-    currentUser = data.session.user;
-    showAdmin();
+  if (categoriesResult.error) {
+    console.error("Error al cargar categorías:", categoriesResult.error);
   } else {
-    showLogin();
+    fillFilter(
+      $("categoryFilter"),
+      categoriesResult.data || [],
+      "Todas las categorías"
+    );
   }
+
+  if (materialsResult.error) {
+    console.error("Error al cargar materiales:", materialsResult.error);
+  } else {
+    fillFilter(
+      $("materialFilter"),
+      materialsResult.data || [],
+      "Todos los materiales"
+    );
+  }
+
+  renderProducts();
 }
 
-function showLogin() {
-  loginSection.classList.remove("hidden");
-  adminSection.classList.add("hidden");
-  $("logoutButton").classList.add("hidden");
-}
+function fillFilter(select, rows, placeholder) {
+  if (!select) return;
 
-async function showAdmin() {
-  loginSection.classList.add("hidden");
-  adminSection.classList.remove("hidden");
-  $("logoutButton").classList.remove("hidden");
+  const previousValue = select.value;
 
-  await loadOptions();
-  await loadProducts();
-}
+  select.innerHTML = "";
 
-// Iniciar sesión
-loginForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+  const firstOption = document.createElement("option");
+  firstOption.value = "";
+  firstOption.textContent = placeholder;
+  select.appendChild(firstOption);
 
-  const button = loginForm.querySelector('button[type="submit"]');
-  button.disabled = true;
-  showMessage($("loginMessage"), "Iniciando sesión...");
-
-  const { data, error } = await db.auth.signInWithPassword({
-    email: $("email").value.trim(),
-    password: $("password").value
+  rows.forEach(row => {
+    const option = document.createElement("option");
+    option.value = row.name;
+    option.textContent = row.name;
+    select.appendChild(option);
   });
 
-  button.disabled = false;
+  // Conservar el filtro seleccionado si sigue existiendo.
+  if ([...select.options].some(option => option.value === previousValue)) {
+    select.value = previousValue;
+  }
+}
 
-  if (error) {
-    showMessage($("loginMessage"), "No se pudo iniciar sesión. Revisa tus datos.");
+
+// ==========================================
+// CARRITO
+// ==========================================
+
+let cart = JSON.parse(localStorage.getItem("alebrijesCart")) || [];
+
+function saveCart() {
+  localStorage.setItem("alebrijesCart", JSON.stringify(cart));
+  renderCart();
+}
+
+
+// ==========================================
+// MOSTRAR CATÁLOGO Y FILTRAR PRODUCTOS
+// ==========================================
+
+function renderProducts() {
+  const container = $("productList");
+
+  if (!container) return;
+
+  const categoryFilter = $("categoryFilter");
+  const materialFilter = $("materialFilter");
+
+  const category = categoryFilter ? categoryFilter.value : "";
+  const material = materialFilter ? materialFilter.value : "";
+
+  const filteredProducts = products.filter(product => {
+    const matchesCategory =
+      !category || normalize(product.category) === normalize(category);
+
+    const matchesMaterial =
+      !material || normalize(product.material) === normalize(material);
+
+    return matchesCategory && matchesMaterial;
+  });
+
+  if (filteredProducts.length === 0) {
+    container.innerHTML = `
+      <p class="no-products">
+        No encontramos piezas con esos filtros.
+      </p>
+    `;
     return;
   }
 
-  currentUser = data.user;
-  loginForm.reset();
-  showMessage($("loginMessage"), "");
-  showAdmin();
-});
+  container.innerHTML = filteredProducts.map(product => {
+    const images = getImages(product);
+    const firstImage = images[0] || "";
+    const unavailable = product.status === "unavailable";
 
-// Cerrar sesión
-$("logoutButton").addEventListener("click", async () => {
-  await db.auth.signOut();
-  currentUser = null;
-  showLogin();
-});
+    return `
+      <article class="product">
 
-// Obtener productos
-async function loadProducts() {
-  productsList.innerHTML = "<p>Cargando productos...</p>";
+        <img
+          src="${escapeHTML(firstImage)}"
+          alt="${escapeHTML(product.name)}"
+          data-gallery="${escapeHTML(product.id)}"
+          loading="lazy"
+        >
 
-  const { data, error } = await db
-    .from("products")
-    .select("*")
-    .order("id", { ascending: false });
-
-  if (error) {
-    productsList.innerHTML = "<p>No se pudieron cargar los productos.</p>";
-    console.error(error);
-    return;
-  }
-
-  if (!data.length) {
-    productsList.innerHTML = "<p>Aún no hay productos registrados.</p>";
-    return;
-  }
-
-  productsList.innerHTML = data.map(product => `
-    <article class="product-row">
-      <div class="product-info">
         <h3>${escapeHTML(product.name)}</h3>
-        <p>${escapeHTML(product.category || "Sin categoría")} · ${formatPrice(product.price)}</p>
-        <p>Estado: ${escapeHTML(product.status)}</p>
-        <p>${(product.images || []).length} fotografía(s)</p>
-      </div>
-      <div class="product-actions">
-        <button type="button" data-edit="${product.id}">Editar</button>
-        <button type="button" class="danger" data-delete="${product.id}">Eliminar</button>
-      </div>
-    </article>
-  `).join("");
 
-  productsList.querySelectorAll("[data-edit]").forEach(button => {
-    button.addEventListener("click", () => {
-      const product = data.find(item => String(item.id) === button.dataset.edit);
-      editProduct(product);
-    });
-  });
+        <p>${escapeHTML(product.description || "")}</p>
 
-  productsList.querySelectorAll("[data-delete]").forEach(button => {
-    button.addEventListener("click", () => {
-      deleteProduct(button.dataset.delete);
-    });
-  });
+        <p class="product-measures">
+          Alto: ${escapeHTML(product.height || "Consultar")} ·
+          Largo: ${escapeHTML(product.length || "Consultar")} ·
+          Ancho: ${escapeHTML(product.width || "Consultar")}
+        </p>
+
+        <p>Material: ${escapeHTML(product.material || "Consultar")}</p>
+
+        <strong>${formatPrice(product.price)}</strong>
+
+        ${
+          unavailable
+            ? '<p class="product-unavailable">No disponible</p>'
+            : ""
+        }
+
+        <a
+          class="whatsapp-button"
+          href="https://wa.me/529511234567?text=${encodeURIComponent(
+            `Hola, me interesa ${product.name}. ¿Me pueden dar más información?`
+          )}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          💬 Consultar por WhatsApp
+        </a>
+
+      </article>
+    `;
+  }).join("");
 }
 
-// Limpiar formulario
-function resetForm() {
-  productForm.reset();
-  $("productId").value = "";
-  $("imageUrls").value = "";
-  $("formTitle").textContent = "Agregar alebrije";
-  $("saveButton").textContent = "Guardar producto";
-  showMessage($("formMessage"), "");
+
+// ==========================================
+// ABRIR Y CERRAR FILTROS
+// ==========================================
+
+const filterPanel = $("filterPanel");
+const filterOverlay = $("filterOverlay");
+
+function openFilters() {
+  filterPanel?.classList.add("open");
+  filterOverlay?.classList.add("active");
+  document.body.classList.add("filters-open");
 }
 
-// Editar producto
-function editProduct(product) {
-  $("productId").value = product.id;
-  $("name").value = product.name || "";
-  $("description").value = product.description || "";
-  $("price").value = product.price ?? 0;
-  $("height").value = product.height || "";
-  $("length").value = product.length || "";
-  $("width").value = product.width || "";
-  $("material").value = product.material || "";
-  $("category").value = product.category || "";
-  $("status").value = product.status || "available";
-  $("imageUrls").value = (product.images || []).join("\n");
-
-  $("formTitle").textContent = "Editar alebrije";
-  $("saveButton").textContent = "Guardar cambios";
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
+function closeFilters() {
+  filterPanel?.classList.remove("open");
+  filterOverlay?.classList.remove("active");
+  document.body.classList.remove("filters-open");
 }
 
-// Subir fotografías a Supabase Storage
-async function uploadPhotos(files) {
-  const uploadedUrls = [];
+$("openFilters")?.addEventListener("click", openFilters);
 
-  for (const file of files) {
-    if (!file.type.startsWith("image/")) {
-      throw new Error("Solo puedes subir archivos de imagen.");
-    }
+$("closeFilters")?.addEventListener("click", closeFilters);
 
-    if (file.size > 10 * 1024 * 1024) {
-      throw new Error("Cada imagen debe pesar menos de 10 MB.");
-    }
+filterOverlay?.addEventListener("click", closeFilters);
 
-    const extension = file.name.split(".").pop().replace(/[^a-zA-Z0-9]/g, "");
-    const path = `${crypto.randomUUID()}.${extension || "jpg"}`;
+$("applyFilters")?.addEventListener("click", () => {
+  renderProducts();
+  closeFilters();
+});
 
-    const { error } = await db.storage
-      .from("product-images")
-      .upload(path, file, {
-        contentType: file.type,
-        upsert: false
-      });
+$("clearFilters")?.addEventListener("click", () => {
+  if ($("categoryFilter")) $("categoryFilter").value = "";
+  if ($("materialFilter")) $("materialFilter").value = "";
 
-    if (error) throw error;
+  renderProducts();
+});
 
-    const { data } = db.storage
-      .from("product-images")
-      .getPublicUrl(path);
-
-    uploadedUrls.push(data.publicUrl);
-  }
-
-  return uploadedUrls;
-}
-
-// Guardar producto nuevo o editado
-productForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const button = $("saveButton");
-  button.disabled = true;
-  showMessage($("formMessage"), "Guardando producto...");
-
-  try {
-    const existingImages = $("imageUrls").value
-      .split("\n")
-      .map(url => url.trim())
-      .filter(Boolean);
-
-    const files = Array.from($("photos").files || []);
-    const newImages = await uploadPhotos(files);
-
-    const product = {
-      name: $("name").value.trim(),
-      description: $("description").value.trim(),
-      price: Number($("price").value),
-      height: $("height").value.trim(),
-      length: $("length").value.trim(),
-      width: $("width").value.trim(),
-      material: $("material").value.trim(),
-      category: $("category").value.trim(),
-      status: $("status").value,
-      images: [...existingImages, ...newImages]
-    };
-
-    const id = $("productId").value;
-
-    let result;
-
-    if (id) {
-      result = await db
-        .from("products")
-        .update(product)
-        .eq("id", id);
-    } else {
-      result = await db
-        .from("products")
-        .insert(product);
-    }
-
-    if (result.error) throw result.error;
-
-    showMessage($("formMessage"), "¡Producto guardado correctamente!");
-    resetForm();
-    await loadProducts();
-
-  } catch (error) {
-    console.error(error);
-    showMessage($("formMessage"), "Error al guardar: " + error.message);
-  } finally {
-    button.disabled = false;
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeFilters();
+    modal?.classList.remove("open");
   }
 });
 
-// Eliminar producto
-async function deleteProduct(id) {
-  const confirmed = confirm(
-    "¿Seguro que deseas eliminar este producto?"
+
+// ==========================================
+// GALERÍA: ABRIR DESDE EL CATÁLOGO
+// ==========================================
+
+$("productList")?.addEventListener("click", event => {
+  const image = event.target.closest("[data-gallery]");
+
+  if (image) {
+    openGallery(image.dataset.gallery);
+  }
+});
+
+
+// ==========================================
+// MOSTRAR CARRITO
+// ==========================================
+
+function renderCart() {
+  const container = $("cartItems");
+
+  if (!container) return;
+
+  container.innerHTML = cart.length
+    ? cart.map(product => `
+      <div class="cart-item">
+
+        <img
+          src="${escapeHTML(getImages(product)[0] || "")}"
+          alt="${escapeHTML(product.name)}"
+        >
+
+        <div class="cart-item-info">
+
+          <b>${escapeHTML(product.name)}</b>
+
+          <p>${formatPrice(product.price)}</p>
+
+          <button class="quantity-button" data-minus="${product.id}">−</button>
+
+          ${product.quantity}
+
+          <button class="quantity-button" data-plus="${product.id}">+</button>
+
+          <br>
+
+          <button class="remove-button" data-remove="${product.id}">
+            Eliminar
+          </button>
+
+        </div>
+      </div>
+    `).join("")
+    : "<p>Tu carrito está vacío 🛒</p>";
+
+  const subtotal = cart.reduce(
+    (sum, product) => sum + Number(product.price) * product.quantity,
+    0
   );
 
-  if (!confirmed) return;
+  const count = cart.reduce(
+    (sum, product) => sum + product.quantity,
+    0
+  );
 
-  const { error } = await db
-    .from("products")
-    .delete()
-    .eq("id", id);
+  const shipping = 150;
 
-  if (error) {
-    alert("No se pudo eliminar el producto.");
-    console.error(error);
+  if ($("cartCount")) $("cartCount").textContent = count;
+
+  if ($("subtotal")) $("subtotal").textContent = formatPrice(subtotal);
+
+  if ($("shippingCost")) {
+    $("shippingCost").textContent = formatPrice(shipping);
+  }
+
+  if ($("total")) {
+    $("total").textContent =
+      formatPrice(subtotal + (cart.length ? shipping : 0));
+  }
+}
+
+
+// ==========================================
+// MODIFICAR Y ELIMINAR PRODUCTOS DEL CARRITO
+// ==========================================
+
+$("cartItems")?.addEventListener("click", event => {
+  const plus = event.target.dataset.plus;
+  const minus = event.target.dataset.minus;
+  const remove = event.target.dataset.remove;
+
+  if (plus) {
+    const product = cart.find(p => String(p.id) === String(plus));
+    if (product) product.quantity++;
+  }
+
+  if (minus) {
+    const product = cart.find(p => String(p.id) === String(minus));
+
+    if (product) {
+      product.quantity--;
+
+      if (product.quantity <= 0) {
+        cart = cart.filter(p => String(p.id) !== String(minus));
+      }
+    }
+  }
+
+  if (remove) {
+    cart = cart.filter(p => String(p.id) !== String(remove));
+  }
+
+  saveCart();
+});
+
+
+// ==========================================
+// ABRIR Y CERRAR CARRITO
+// ==========================================
+
+const cartPanel = $("cartPanel");
+
+$("cartButton")?.addEventListener("click", () => {
+  cartPanel?.classList.add("open");
+});
+
+$("closeCart")?.addEventListener("click", () => {
+  cartPanel?.classList.remove("open");
+});
+
+
+// ==========================================
+// PRESENTACIÓN AUTOMÁTICA DEL INICIO
+// ==========================================
+
+const slides = [
+  "imagenes/LOGO.jpeg",
+  "imagenes/Zorro/ZORRO.jpeg",
+  "imagenes/Tapir/Tapir.jpeg",
+  "imagenes/Gorila/Gorila.jpeg",
+  "imagenes/Jaguar/Jaguar.jpeg"
+];
+
+let currentSlide = 0;
+
+if ($("heroImage")) {
+  setInterval(() => {
+    currentSlide = (currentSlide + 1) % slides.length;
+    $("heroImage").src = slides[currentSlide];
+  }, 4000);
+}
+
+
+// ==========================================
+// GALERÍA DE FOTOGRAFÍAS
+// ==========================================
+
+const modal = $("galleryModal");
+const galleryImage = $("galleryImage");
+
+let currentProduct = null;
+let currentImage = 0;
+
+function openGallery(productId) {
+  currentProduct = products.find(
+    p => String(p.id) === String(productId)
+  );
+
+  if (!currentProduct) return;
+
+  if (getImages(currentProduct).length === 0) return;
+
+  currentImage = 0;
+  showGalleryImage();
+
+  modal?.classList.add("open");
+}
+
+function showGalleryImage() {
+  if (!currentProduct) return;
+
+  const images = getImages(currentProduct);
+
+  if (!images.length) return;
+
+  galleryImage.src = images[currentImage];
+  galleryImage.alt = currentProduct.name || "Fotografía del alebrije";
+}
+
+$("closeGallery")?.addEventListener("click", () => {
+  modal?.classList.remove("open");
+});
+
+$("previousImage")?.addEventListener("click", () => {
+  if (!currentProduct) return;
+
+  const images = getImages(currentProduct);
+
+  currentImage =
+    (currentImage - 1 + images.length) % images.length;
+
+  showGalleryImage();
+});
+
+$("nextImage")?.addEventListener("click", () => {
+  if (!currentProduct) return;
+
+  const images = getImages(currentProduct);
+
+  currentImage = (currentImage + 1) % images.length;
+
+  showGalleryImage();
+});
+
+
+// ==========================================
+// ENVÍO DE DEMOSTRACIÓN
+// ==========================================
+
+$("destination")?.addEventListener("input", event => {
+  const message = $("shippingMessage");
+
+  if (!message) return;
+
+  message.textContent = /^\d{5}$/.test(event.target.value)
+    ? "Costo de envío estimado: $150 MXN (demostración)"
+    : "Ingresa un código postal de 5 dígitos.";
+});
+
+
+// ==========================================
+// FINALIZAR COMPRA
+// ==========================================
+
+$("checkoutButton")?.addEventListener("click", () => {
+  const postalCode = $("destination")?.value || "";
+
+  if (!cart.length) {
+    alert("Tu carrito está vacío.");
     return;
   }
 
-  await loadProducts();
-}
-
-// Botones auxiliares
-$("newProductButton").addEventListener("click", resetForm);
-$("cancelButton").addEventListener("click", resetForm);
-$("refreshButton").addEventListener("click", loadProducts);
-$("addCategoryButton").addEventListener("click", addCategory);
-$("addMaterialButton").addEventListener("click", addMaterial);
-
-
-
-// Escuchar cambios de sesión
-db.auth.onAuthStateChange((_event, session) => {
-  if (session) {
-    currentUser = session.user;
-    showAdmin();
-  } else {
-    currentUser = null;
-    showLogin();
+  if (!/^\d{5}$/.test(postalCode)) {
+    alert("Ingresa un código postal válido.");
+    return;
   }
+
+  alert(
+    "¡Excelente! Tu pedido está listo para el siguiente paso. " +
+    "Todavía falta conectar el sistema de pagos y los envíos."
+  );
 });
 
-// Arrancar el panel
-checkSession();
+
+// ==========================================
+// INICIAR TIENDA
+// ==========================================
+
+renderCart();
+loadStoreData();
