@@ -664,8 +664,8 @@ body.filters-open {
 
 /* =====================================
    ANCESTRALES - OPTIMIZACIÓN MÓVIL
-===================================== 
-
+===================================== */
+/*
 * {
   box-sizing: border-box;
 }
@@ -706,9 +706,9 @@ nav a {
 }*/
 
 
-/*
-/* PORTADA */
 
+/* PORTADA */
+/*
 .hero {
   min-height: 380px;
   height: min(65vh, 520px);
