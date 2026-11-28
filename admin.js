@@ -38,6 +38,110 @@ function formatPrice(value) {
   });
 }
 
+
+// Cargar categorías y materiales desde Supabase
+async function loadOptions() {
+  const categorySelect = $("category");
+  const materialSelect = $("material");
+
+  const [categoriesResult, materialsResult] = await Promise.all([
+    db.from("categories").select("name").order("name"),
+    db.from("materials").select("name").order("name")
+  ]);
+
+  if (categoriesResult.error || materialsResult.error) {
+    console.error(
+      categoriesResult.error || materialsResult.error
+    );
+    showMessage(
+      $("formMessage"),
+      "No se pudieron cargar las categorías o materiales."
+    );
+    return;
+  }
+
+  function fillSelect(select, rows, placeholder, currentValue = "") {
+    const names = rows.map(row => row.name);
+
+    // Conservar una opción antigua si algún producto ya la utiliza.
+    if (currentValue && !names.includes(currentValue)) {
+      names.push(currentValue);
+    }
+
+    select.innerHTML = "";
+
+    const firstOption = document.createElement("option");
+    firstOption.value = "";
+    firstOption.textContent = placeholder;
+    select.appendChild(firstOption);
+
+    names.forEach(name => {
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+
+    if (currentValue) {
+      select.value = currentValue;
+    }
+  }
+
+  fillSelect(categorySelect, categoriesResult.data, "Selecciona una categoría");
+  fillSelect(materialSelect, materialsResult.data, "Selecciona un material");
+}
+
+// Agregar una categoría nueva
+async function addCategory() {
+  const name = prompt("Escribe el nombre de la nueva categoría:");
+
+  if (!name || !name.trim()) return;
+
+  const cleanName = name.trim();
+
+  const { error } = await db
+    .from("categories")
+    .insert({ name: cleanName });
+
+  if (error) {
+    alert(
+      error.code === "23505"
+        ? "Esa categoría ya existe."
+        : "No se pudo agregar la categoría: " + error.message
+    );
+    return;
+  }
+
+  await loadOptions();
+  $("category").value = cleanName;
+}
+
+// Agregar un material nuevo
+async function addMaterial() {
+  const name = prompt("Escribe el nombre del nuevo material:");
+
+  if (!name || !name.trim()) return;
+
+  const cleanName = name.trim();
+
+  const { error } = await db
+    .from("materials")
+    .insert({ name: cleanName });
+
+  if (error) {
+    alert(
+      error.code === "23505"
+        ? "Ese material ya existe."
+        : "No se pudo agregar el material: " + error.message
+    );
+    return;
+  }
+
+  await loadOptions();
+  $("material").value = cleanName;
+}
+
+
 // Comprobar sesión al abrir el panel
 async function checkSession() {
   const { data, error } = await db.auth.getSession();
