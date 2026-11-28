@@ -902,3 +902,32 @@ nav a {
   }
 }
 
+
+
+/* Selectores de categorías y materiales */
+.option-control {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.option-control select {
+  flex: 1;
+  min-width: 0;
+}
+
+.option-control button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .option-control {
+    flex-wrap: wrap;
+  }
+
+  .option-control select,
+  .option-control button {
+    width: 100%;
+  }
+}
